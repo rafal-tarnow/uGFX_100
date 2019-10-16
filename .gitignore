@@ -1,0 +1,14 @@
+*pro.user*
+*pro.user
+*.autosave
+build-*/
+**/build-*/
+
+Błąd-*/
+**/Błąd-*/
+
+.~lock.
+.~lock.*.odt#
+*.odt#
+
+gource_output/
