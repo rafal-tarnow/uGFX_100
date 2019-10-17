@@ -1,19 +1,49 @@
 #include <iostream>
 
+#include <library_api/epoll.hpp>
+
 #include "opengl_includes.hpp"
 #include "frame.hpp"
+#include "server_application.h"
 
 using namespace std;
 
+GLFWwindow *win;
+Server *server;
+constexpr int WINDOW_WIDTH = 480;
+constexpr int WINDOW_HEIGHT =  480;
+
 void errorCallback(int e, const char *d);
 void printOpenGlVersion();
+void initWindow();
+
+void glfw_callback(int fd)
+{
+    if(glfwWindowShouldClose(win))
+        Epoll::exit(0);
+
+    glfwPollEvents();
+    server->paintGL(WINDOW_WIDTH, WINDOW_HEIGHT);
+    glfwSwapBuffers(win);
+}
 
 int main()
 {
-    GLFWwindow *win;
-    constexpr int WINDOW_WIDTH = 480;
-    constexpr int WINDOW_HEIGHT =  480;
+    Epoll epoll(false);
 
+    initWindow();
+    server = new Server();
+    epoll.runApp();
+
+    delete server;
+    glfwTerminate();
+
+    cout << "EXIT_SUCCESS!" << endl;
+    return EXIT_SUCCESS;
+}
+
+void initWindow()
+{
     glfwSetErrorCallback(errorCallback);
     if (!glfwInit())
     {
@@ -33,20 +63,11 @@ int main()
 
     printOpenGlVersion();
 
-    frame_init();
+    int x11_fd = ConnectionNumber(glfwGetX11Display());
+    glfwSwapBuffers(win);
 
-    while (!glfwWindowShouldClose(win))
-    {
-        glfwPollEvents();
+    Epoll::addClient<glfw_callback>(x11_fd);
 
-        frame_render(WINDOW_WIDTH, WINDOW_HEIGHT);
-
-        glfwSwapBuffers(win);
-    }
-
-    glfwTerminate();
-    cout << "EXIT_SUCCESS!" << endl;
-    return EXIT_SUCCESS;
 }
 
 void printOpenGlVersion()

@@ -1,8 +1,17 @@
-#include <QCoreApplication>
+#include <iostream>
+
+#include <library_api/epoll.hpp>
+
+#include "client_application.h"
+
+using namespace std;
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+    Epoll epoll(false);
+    ClientApplication client;
+    epoll.runApp();
 
-    return a.exec();
+    cout << "EXIT_SUCESSFULL!" << endl;
+    return 0;
 }

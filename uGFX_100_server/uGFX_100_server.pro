@@ -1,3 +1,5 @@
+include(../libs/library_api/library_api.pri)
+
 TEMPLATE = app
 CONFIG += console c++11
 CONFIG -= app_bundle
@@ -11,10 +13,12 @@ INCLUDEPATH += . ../libs
 SOURCES += \
         main.cpp \
     frame.cpp \
-    camera.cpp
+    camera.cpp \
+    server_application.cpp
 
 HEADERS += \
     opengl_includes.hpp \
     frame.hpp \
     glm_includes.hpp \
-    camera.hpp
+    camera.hpp \
+    server_application.h
